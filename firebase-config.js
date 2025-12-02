@@ -23,19 +23,7 @@ const storage = firebase.storage();
 // Auth Settings
 auth.languageCode = 'th';
 
-// Firestore Settings (Optional - for better performance)
-db.settings({
-    cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED
-});
-
-// Enable offline persistence (Optional)
-db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
-    if (err.code === 'failed-precondition') {
-        console.log('Multiple tabs open, persistence enabled in first tab only');
-    } else if (err.code === 'unimplemented') {
-        console.log('Browser does not support persistence');
-    }
-});
+console.log('🔥 Firebase initialized successfully');
 
 // ============================================================
 // Firebase Helper Functions

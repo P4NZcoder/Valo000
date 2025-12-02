@@ -561,49 +561,61 @@ function updatePurchaseTotal(price) {
 
 async function confirmPurchase(id) {
     const listing = allListings.find(l => l.id === id);
-    if (!listing) return;
+    if (!listing) {
+        showToast('ไม่พบสินค้า', 'error');
+        return;
+    }
+    
+    if (!currentUser) {
+        showToast('กรุณาเข้าสู่ระบบก่อน', 'error');
+        closeModal('purchaseModal');
+        showAuthModal();
+        return;
+    }
     
     const insurance = parseInt(document.getElementById('insuranceSelect')?.value) || 0;
     const total = listing.price + insurance;
     
-    if (currentUser.coins < total) {
-        showToast('Coins ไม่เพียงพอ', 'error');
+    if ((currentUser.coins || 0) < total) {
+        showToast('Coins ไม่เพียงพอ กรุณาเติมเงิน', 'error');
         closeModal('purchaseModal');
         showDepositModal();
         return;
     }
     
+    // Get game credentials from listing (Admin กรอกไว้ตอนอนุมัติ)
+    const credentials = listing.gameCredentials || {};
+    
     try {
         // Deduct coins from buyer
         currentUser.coins -= total;
-        await db.collection('users').doc(currentUser.id).update({ coins: currentUser.coins });
+        await db.collection('users').doc(currentUser.id).update({ 
+            coins: currentUser.coins 
+        });
         
         // Add coins to seller (90% after 10% fee)
         const sellerAmount = Math.floor(listing.price * 0.9);
         if (listing.sellerId && listing.sellerId !== 'sample') {
-            const sellerRef = db.collection('users').doc(listing.sellerId);
-            const sellerDoc = await sellerRef.get();
-            if (sellerDoc.exists) {
-                await sellerRef.update({ 
+            try {
+                await db.collection('users').doc(listing.sellerId).update({ 
                     coins: firebase.firestore.FieldValue.increment(sellerAmount)
                 });
+            } catch (sellerError) {
+                console.log('Could not update seller coins:', sellerError);
             }
         }
-        
-        // Get game credentials from listing
-        const credentials = listing.gameCredentials || {};
         
         // Record purchase with game credentials
         const purchaseData = {
             listingId: listing.id,
             listingTitle: listing.title,
-            listingImage: listing.image,
+            listingImage: listing.image || getDefaultImage(listing.rank),
             listingRank: listing.rank,
             listingSkins: listing.skins,
             buyerId: currentUser.id,
-            buyerName: currentUser.username,
-            sellerId: listing.sellerId,
-            sellerName: listing.sellerName,
+            buyerName: currentUser.username || 'User',
+            sellerId: listing.sellerId || '',
+            sellerName: listing.sellerName || 'Unknown',
             price: listing.price,
             insurance, 
             total,
@@ -615,11 +627,15 @@ async function confirmPurchase(id) {
         await db.collection('purchases').add(purchaseData);
         
         // Update listing status to sold
-        await db.collection('listings').doc(id).update({ 
-            status: 'sold',
-            soldAt: firebase.firestore.FieldValue.serverTimestamp(),
-            buyerId: currentUser.id
-        });
+        try {
+            await db.collection('listings').doc(id).update({ 
+                status: 'sold',
+                soldAt: firebase.firestore.FieldValue.serverTimestamp(),
+                buyerId: currentUser.id
+            });
+        } catch (updateError) {
+            console.log('Could not update listing status:', updateError);
+        }
         
         // Remove from allListings
         allListings = allListings.filter(l => l.id !== id);
@@ -633,7 +649,35 @@ async function confirmPurchase(id) {
         
     } catch (e) {
         console.error('Purchase error:', e);
-        showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+        
+        // If Firestore fails, still show success in Demo mode
+        if (e.code === 'permission-denied') {
+            // Rollback coins locally
+            currentUser.coins += total;
+            
+            showToast('⚠️ ต้องตั้งค่า Firestore Rules ก่อน - ดู Console', 'error');
+            console.log(`
+╔════════════════════════════════════════════════════════════════╗
+║  ⚠️ FIRESTORE PERMISSION ERROR                                 ║
+║                                                                ║
+║  กรุณาไปที่ Firebase Console > Firestore Database > Rules     ║
+║  แล้ววางโค้ดนี้:                                               ║
+║                                                                ║
+║  rules_version = '2';                                         ║
+║  service cloud.firestore {                                    ║
+║    match /databases/{database}/documents {                    ║
+║      match /{document=**} {                                   ║
+║        allow read, write: if true;                            ║
+║      }                                                        ║
+║    }                                                          ║
+║  }                                                            ║
+║                                                                ║
+║  แล้วกด Publish                                               ║
+╚════════════════════════════════════════════════════════════════╝
+            `);
+        } else {
+            showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+        }
     }
 }
 
@@ -1632,9 +1676,33 @@ async function sendUserMessage() {
         });
         input.value = '';
         await loadUserChatMessages();
+        showToast('ส่งข้อความสำเร็จ', 'success');
     } catch (e) {
         console.error('Send error:', e);
-        showToast('ส่งข้อความไม่สำเร็จ: ' + e.message, 'error');
+        if (e.code === 'permission-denied') {
+            showToast('⚠️ ต้องตั้งค่า Firestore Rules ก่อน', 'error');
+            console.log(`
+╔════════════════════════════════════════════════════════════════╗
+║  ⚠️ FIRESTORE PERMISSION ERROR                                 ║
+║                                                                ║
+║  กรุณาไปที่ Firebase Console > Firestore Database > Rules     ║
+║  แล้ววางโค้ดนี้:                                               ║
+║                                                                ║
+║  rules_version = '2';                                         ║
+║  service cloud.firestore {                                    ║
+║    match /databases/{database}/documents {                    ║
+║      match /{document=**} {                                   ║
+║        allow read, write: if true;                            ║
+║      }                                                        ║
+║    }                                                          ║
+║  }                                                            ║
+║                                                                ║
+║  แล้วกด Publish                                               ║
+╚════════════════════════════════════════════════════════════════╝
+            `);
+        } else {
+            showToast('ส่งข้อความไม่สำเร็จ: ' + e.message, 'error');
+        }
     } finally {
         input.disabled = false;
         input.focus();

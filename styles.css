@@ -1422,6 +1422,20 @@ body {
 .transaction-status.pending { color: var(--warning); }
 .transaction-status.rejected { color: var(--error); }
 
+/* Sell Note */
+.sell-note {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid var(--accent);
+    padding: 15px;
+    border-radius: 10px;
+    margin: 20px 0;
+    color: var(--accent);
+    font-size: 0.9rem;
+}
+.sell-note i {
+    margin-right: 8px;
+}
+
 /* Account Credentials Section */
 .account-credentials {
     background: linear-gradient(135deg, rgba(255,70,85,0.1), rgba(0,212,255,0.1));
