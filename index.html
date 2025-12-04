@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="th">
 <head>
     <meta charset="UTF-8">
@@ -72,17 +73,17 @@
             <div class="sell-container">
                 <h1><i class="fas fa-tags"></i> ขายไอดี Valorant</h1>
                 <div class="sell-options"><div class="sell-option selected" onclick="selectSellOption('market',this)"><i class="fas fa-store"></i><h3>ลงตลาด</h3><p>ค่าธรรมเนียม 10%</p></div><div class="sell-option" onclick="selectSellOption('instant',this)"><i class="fas fa-bolt"></i><h3>ขายทันที</h3><p>รับ 85%</p></div></div>
-                <form class="sell-form" id="sellForm" onsubmit="submitListing(event)">
+                <div class="sell-form" id="sellForm">
                     <input type="hidden" id="sellType" value="market">
-                    <div class="form-row"><div class="form-group"><label>Rank ปัจจุบัน</label><select id="listingRank" required><option value="">เลือก</option><option value="radiant">Radiant</option><option value="immortal">Immortal</option><option value="ascendant">Ascendant</option><option value="diamond">Diamond</option><option value="platinum">Platinum</option><option value="gold">Gold</option><option value="silver">Silver</option><option value="bronze">Bronze</option><option value="iron">Iron</option></select></div><div class="form-group"><label>Peak Rank</label><select id="listingPeakRank"><option value="">เลือก</option><option value="radiant">Radiant</option><option value="immortal">Immortal</option><option value="ascendant">Ascendant</option><option value="diamond">Diamond</option><option value="platinum">Platinum</option><option value="gold">Gold</option></select></div></div>
-                    <div class="form-row"><div class="form-group"><label>จำนวน Skins</label><input type="number" id="listingSkins" min="0" required placeholder="0"></div><div class="form-group"><label>ราคา (บาท)</label><input type="number" id="listingPrice" min="100" required placeholder="100"></div></div>
-                    <div class="form-group"><label>Skins เด่น</label><textarea id="listingFeaturedSkins" placeholder="เช่น Elderflame Vandal"></textarea></div>
-                    <div class="form-group"><label>จุดเด่น</label><textarea id="listingHighlights" placeholder="เช่น มี VP เหลือ"></textarea></div>
-                    <div class="form-group"><label>รูปภาพ</label><div class="image-upload" onclick="document.getElementById('listingImages').click()"><input type="file" id="listingImages" accept="image/*" multiple hidden onchange="previewImages(event)"><div id="uploadPlaceholder"><i class="fas fa-cloud-upload-alt"></i><p>คลิกอัพโหลด</p></div><div class="image-previews" id="imagePreviews"></div></div></div>
-                    <div class="contact-section"><h3><i class="fas fa-address-book"></i> ช่องทางติดต่อ (Admin จะติดต่อเพื่อขอ ID/Password)</h3><div class="form-row"><div class="form-group"><label><i class="fab fa-facebook"></i> Facebook</label><input type="text" id="contactFacebook"></div><div class="form-group"><label><i class="fab fa-line"></i> Line</label><input type="text" id="contactLine"></div></div><div class="form-row"><div class="form-group"><label><i class="fab fa-discord"></i> Discord</label><input type="text" id="contactDiscord"></div><div class="form-group"><label><i class="fas fa-phone"></i> โทร</label><input type="tel" id="contactPhoneSell"></div></div></div>
+                    <div class="form-row"><div class="form-group"><label>Rank ปัจจุบัน *</label><select id="listingRank"><option value="">เลือก Rank</option><option value="radiant">Radiant</option><option value="immortal">Immortal</option><option value="ascendant">Ascendant</option><option value="diamond">Diamond</option><option value="platinum">Platinum</option><option value="gold">Gold</option><option value="silver">Silver</option><option value="bronze">Bronze</option><option value="iron">Iron</option></select></div><div class="form-group"><label>Peak Rank</label><select id="listingPeakRank"><option value="">เลือก</option><option value="radiant">Radiant</option><option value="immortal">Immortal</option><option value="ascendant">Ascendant</option><option value="diamond">Diamond</option><option value="platinum">Platinum</option><option value="gold">Gold</option></select></div></div>
+                    <div class="form-row"><div class="form-group"><label>จำนวน Skins *</label><input type="number" id="listingSkins" min="0" value="0" placeholder="0"></div><div class="form-group"><label>ราคา (บาท) *</label><input type="number" id="listingPrice" min="100" value="" placeholder="ขั้นต่ำ 100"></div></div>
+                    <div class="form-group"><label>Skins เด่น</label><textarea id="listingFeaturedSkins" placeholder="เช่น Elderflame Vandal, Prime Phantom"></textarea></div>
+                    <div class="form-group"><label>จุดเด่นของไอดี</label><textarea id="listingHighlights" placeholder="เช่น มี VP เหลือ 500, มี Battle Pass"></textarea></div>
+                    <div class="form-group"><label>รูปภาพ (ไม่บังคับ)</label><div class="image-upload" onclick="document.getElementById('listingImages').click()"><input type="file" id="listingImages" accept="image/*" multiple hidden onchange="previewImages(event)"><div id="uploadPlaceholder"><i class="fas fa-cloud-upload-alt"></i><p>คลิกอัพโหลดรูป</p></div><div class="image-previews" id="imagePreviews"></div></div></div>
+                    <div class="contact-section"><h3><i class="fas fa-address-book"></i> ช่องทางติดต่อ * (Admin จะติดต่อเพื่อขอ ID/Password)</h3><div class="form-row"><div class="form-group"><label><i class="fab fa-facebook"></i> Facebook</label><input type="text" id="contactFacebook" placeholder="ชื่อ Facebook"></div><div class="form-group"><label><i class="fab fa-line"></i> Line ID</label><input type="text" id="contactLine" placeholder="Line ID"></div></div><div class="form-row"><div class="form-group"><label><i class="fab fa-discord"></i> Discord</label><input type="text" id="contactDiscord" placeholder="username#1234"></div><div class="form-group"><label><i class="fas fa-phone"></i> เบอร์โทร</label><input type="tel" id="contactPhoneSell" placeholder="08x-xxx-xxxx"></div></div></div>
                     <div class="sell-note"><i class="fas fa-info-circle"></i> หลังส่งขาย Admin จะติดต่อคุณเพื่อขอข้อมูล ID/Password และตรวจสอบก่อนอนุมัติ</div>
-                    <button type="submit" class="btn-primary btn-large"><i class="fas fa-paper-plane"></i> ส่งขาย</button>
-                </form>
+                    <button type="button" class="btn-primary btn-large" onclick="submitListing()"><i class="fas fa-paper-plane"></i> ส่งขาย</button>
+                </div>
             </div>
         </div>
         <!-- Membership -->
@@ -117,25 +118,6 @@
         </div>
         <!-- Listing Detail -->
         <div class="page" id="page-listing-detail"><div id="listingDetailContent"></div></div>
-        <!-- Admin -->
-        <div class="page" id="page-admin">
-            <div class="admin-container">
-                <div class="admin-sidebar">
-                    <div class="admin-logo"><i class="fas fa-cog"></i> Admin</div>
-                    <nav><div class="nav-item active" onclick="switchAdminTab('pending',this)"><i class="fas fa-clock"></i> รออนุมัติ <span class="badge" id="badgePending">0</span></div><div class="nav-item" onclick="switchAdminTab('listings',this)"><i class="fas fa-list"></i> ประกาศ</div><div class="nav-item" onclick="switchAdminTab('users',this)"><i class="fas fa-users"></i> ผู้ใช้</div><div class="nav-item" onclick="switchAdminTab('deposits',this)"><i class="fas fa-plus-circle"></i> เติมเงิน <span class="badge" id="badgeDeposits">0</span></div><div class="nav-item" onclick="switchAdminTab('withdrawals',this)"><i class="fas fa-minus-circle"></i> ถอนเงิน <span class="badge" id="badgeWithdrawals">0</span></div><div class="nav-item" onclick="switchAdminTab('chats',this)"><i class="fas fa-comments"></i> แชท <span class="badge" id="badgeChats">0</span></div><div class="nav-item" onclick="switchAdminTab('reports',this)"><i class="fas fa-chart-bar"></i> รายงาน</div></nav>
-                    <button class="btn-logout" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> ออก</button>
-                </div>
-                <div class="admin-content">
-                    <div class="admin-tab active" id="admin-pending"><h2>รออนุมัติ</h2><div id="pendingList"></div></div>
-                    <div class="admin-tab" id="admin-listings"><h2>ประกาศทั้งหมด</h2><div id="adminListingsTable"></div></div>
-                    <div class="admin-tab" id="admin-users"><h2>ผู้ใช้</h2><input type="text" placeholder="ค้นหา..." oninput="searchUsers(this.value)"><div id="usersTable"></div></div>
-                    <div class="admin-tab" id="admin-deposits"><h2>เติมเงิน</h2><div id="depositsList"></div></div>
-                    <div class="admin-tab" id="admin-withdrawals"><h2>ถอนเงิน</h2><div id="withdrawalsList"></div></div>
-                    <div class="admin-tab" id="admin-chats"><h2>แชทกับลูกค้า</h2><div class="chat-admin-container"><div class="chat-users-list" id="chatUsersList"></div><div class="chat-messages-area"><div class="chat-header" id="chatHeader"><span>เลือกแชท</span></div><div class="chat-messages" id="adminChatMessages"></div><div class="chat-input-area" id="adminChatInput" style="display:none"><input type="text" id="adminMessageInput" placeholder="พิมพ์ข้อความ..." onkeypress="if(event.key==='Enter')sendAdminMessage()"><button onclick="sendAdminMessage()"><i class="fas fa-paper-plane"></i></button></div></div></div></div>
-                    <div class="admin-tab" id="admin-reports"><h2>รายงาน</h2><div class="report-cards"><div class="report-card"><h3>ยอดวันนี้</h3><div id="todayRevenue">฿0</div></div><div class="report-card"><h3>ยอดเดือน</h3><div id="monthRevenue">฿0</div></div><div class="report-card"><h3>จำนวนขาย</h3><div id="totalSalesCount">0</div></div><div class="report-card"><h3>ค่าธรรมเนียม</h3><div id="totalFees">฿0</div></div></div></div>
-                </div>
-            </div>
-        </div>
     </main>
     <!-- Modals -->
     <div class="modal" id="authModal">
@@ -160,15 +142,6 @@
                 <div class="form-group"><label><i class="fas fa-lock"></i> ยืนยันรหัสผ่าน</label><input type="password" id="registerConfirmPassword" placeholder="กรอกรหัสผ่านอีกครั้ง"></div>
                 <button class="btn-primary" onclick="registerWithEmail()"><i class="fas fa-user-plus"></i> สมัครสมาชิก</button>
             </div>
-        </div>
-    </div>
-    <div class="modal" id="adminLoginModal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeModal('adminLoginModal')">&times;</button>
-            <div class="admin-login-header"><i class="fas fa-user-shield"></i><h2>Admin Login</h2></div>
-            <div class="form-group"><label><i class="fas fa-user"></i> Username</label><input type="text" id="adminUsername" placeholder="กรอก Username"></div>
-            <div class="form-group"><label><i class="fas fa-lock"></i> Password</label><input type="password" id="adminPassword" placeholder="กรอก Password" onkeypress="if(event.key==='Enter')loginAdmin()"></div>
-            <button class="btn-primary" onclick="loginAdmin()"><i class="fas fa-sign-in-alt"></i> เข้าสู่ระบบ</button>
         </div>
     </div>
     <div class="modal" id="depositModal">
